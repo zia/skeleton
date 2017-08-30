@@ -1,0 +1,36 @@
+body {
+    padding-top: 70px;
+ }
+
+/**
+* @from harviacode/core/create_view_list_pdf
+*/
+.word-table {
+    border:1px solid black !important; 
+    border-collapse: collapse !important;
+    width: 100%;
+}
+.word-table tr th, .word-table tr td{
+    border:1px solid black !important; 
+    padding: 5px 10px;
+}
+
+/**
+* @from harviacode/core/create_view_list_datatables
+*/
+.dataTables_wrapper {
+    min-height: 500px;
+}
+
+.dataTables_processing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    margin-left: -50%;
+    margin-top: -25px;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    color:grey;
+}
