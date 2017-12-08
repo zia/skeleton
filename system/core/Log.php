@@ -124,7 +124,7 @@ class CI_Log {
 
 		isset(self::$func_overload) OR self::$func_overload = (extension_loaded('mbstring') && ini_get('mbstring.func_overload'));
 
-		$this->_log_path = (isset($config['log_path']) && $config['log_path'] !== '') ? $config['log_path'] : APPPATH.'logs/';
+		$this->_log_path = ($config['log_path'] !== '') ? $config['log_path'] : APPPATH.'logs/';
 		$this->_file_ext = (isset($config['log_file_extension']) && $config['log_file_extension'] !== '')
 			? ltrim($config['log_file_extension'], '.') : 'php';
 
@@ -135,11 +135,11 @@ class CI_Log {
 			$this->_enabled = FALSE;
 		}
 
-		if (is_numeric(isset($config['log_threshold']) && $config['log_threshold']))
+		if (is_numeric($config['log_threshold']))
 		{
 			$this->_threshold = (int) $config['log_threshold'];
 		}
-		elseif (isset($config['log_threshold']) && is_array($config['log_threshold']))
+		elseif (is_array($config['log_threshold']))
 		{
 			$this->_threshold = 0;
 			$this->_threshold_array = array_flip($config['log_threshold']);

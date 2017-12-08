@@ -21,6 +21,7 @@
 
     <!-- DataTables CSS -->
     <?=link_tag('vendor/datatables/datatables/media/css/dataTables.bootstrap4.min.css')?>
+    
     <!-- Custom CSS -->
     <?=link_tag('assets/css/style.css')?>
 
@@ -34,9 +35,9 @@
 </head>
 
 <body>
-    <?php $this->load->view('layouts/navbar')?>
+    <?php // $this->load->view('layouts/navbar')?>
     <!-- Main Container -->
     <div class="container-fluid">
         <div class="row">
-            <?php $this->load->view('layouts/sidebar')?>
-            <div class="col-sm-9">
+            <?php // $this->load->view('layouts/sidebar')?>
+            <div class="col-sm-12">

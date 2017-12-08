@@ -1,70 +1,64 @@
 <?php
-error_reporting(0);
-require_once 'helper.php';
-$res = '';
-$get_setting = readJSON('settingjson.cfg');
+    error_reporting(0);
+    require_once 'helper.php';
+    $res = '';
+    $get_setting = readJSON('settingjson.cfg');
 
-if (isset($_POST['save'])) {
+    if (isset($_POST['save'])) {
 
-    $target = $_POST['target'];
+        $target = $_POST['target'];
 
-    $string = '{
-"target": "' . $target . '",
-"copyassets": "0"
-}';
+        $string = '{
+            "target": "'.$target.'",
+            "copyassets": "0"
+        }';
 
-    $hasil_setting = createFile($string, 'settingjson.cfg');
-    $res = '<p>Setting Updated</p>';
-}
+        $hasil_setting = createFile($string, 'settingjson.cfg');
+        $res = '<strong>Setting Updated</strong>';
+    }
 ?>
 <!doctype html>
 <html>
     <head>
-        <title>Harviacode Codeigniter CRUD Generator</title>
-        <link rel="stylesheet" href="bootstrap.min.css"/>
-        <style>
-            body{
-                padding: 15px;
-            }
-        </style>
+        <title>Harviacode Codeigniter CRUD Generator:: Modified By Ziaur Rahman</title>
+        <link rel="stylesheet" href="../../vendor/components/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="../../vendor/fortawesome/font-awesome/css/font-awesome.min.css"/>
     </head>
     <body>
-        <div class="row">
-            <div class="col-md-3">
-                <?php echo $res; ?>
-                <form action="setting.php" method="POST">
+        <div class="container">
+            <h3><i class="fa fa-bullseye" aria-hidden="true"></i> Target Folder</h3>
+            <hr>
+            <?php if($res) { ?>
+                <div class="alert alert-success alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <?php echo $res; ?>
+                </div>
+            <?php } ?>
+            <form action="setting.php" method="POST">
 
-                    <div class="form-group">
-                        <label>Target Folder</label>
-                        <div class="row">
-                            <?php $target = $_POST['target'] ? $_POST['target'] : $get_setting->target; ?>
-                            <div class="col-md-6">
-                                <div class="radio" style="margin-bottom: 0px; margin-top: 0px">
-                                    <label>
-                                        <input type="radio" name="target" value="../application/" <?php echo $target == '../application/' ? 'checked' : ''; ?>>
-                                        ../application/
-                                    </label>
-                                </div>                            
-                            </div>
-                            <div class="col-md-6">
-                                <div class="radio" style="margin-bottom: 0px; margin-top: 0px">
-                                    <label>
-                                        <input type="radio" name="target" value="output/" <?php echo $target == 'output/' ? 'checked' : ''; ?>>
-                                        output/
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <?php $target = $_POST['target'] ? $_POST['target'] : $get_setting->target; ?>
+                <strong><i class="fa fa-folder" aria-hidden="true"></i> Folders:</strong>&nbsp;
+                <label class="radio-inline">
+                    <input type="radio" name="target" value="../application/" <?php echo $target == '../application/' ? 'checked' : ''; ?>>
+                    ../application/ &nbsp;
+                </label>
+                
+                <label class="radio-inline">
+                    <input type="radio" name="target" value="output/" <?php echo $target == 'output/' ? 'checked' : ''; ?>>
+                    output/
+                </label>
+                
+                <br><br>
 
-                    <input type="submit" value="Save" name="save" class="btn btn-primary" />
-                    <a href="../index.php" class="btn btn-default">Back</a>
-                </form>
-            </div>
-            <div class="col-md-4">
-
-            </div>
+                <button type="submit" name="save" class="btn btn-primary">
+                    <i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+                </button>
+                <a href="../index.php" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+            </form>
         </div>
+        <script src="../../vendor/components/jquery/jquery.min.js" type='text/javascript'></script>
+        <script src="../../vendor/bordercloud/tether/dist/js/tether.min.js"  type='text/javascript'></script>
+        <script src="../../vendor/components/bootstrap/js/bootstrap.min.js" type='text/javascript'></script>
     </body>
 </html>
 

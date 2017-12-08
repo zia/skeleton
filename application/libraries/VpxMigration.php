@@ -71,7 +71,9 @@ class VpxMigration {
      * @param string $tables
      * @return boolean|string
      */
-    function generate($tables = null) {
+    function generate($tables = null, $dbs = null) {
+        if(!$dbs)
+            $dbs = 'sample_db';
         if ($tables)
             $this->tables = $tables;
 
@@ -104,38 +106,27 @@ class VpxMigration {
 
 
         // if default, then run all tables, otherwise just do the list provided
-        if ($this->tables == '*')
-        {
+        if ($this->tables == '*'){
 
             $query = $this->ci->db_master->query('SHOW full TABLES FROM ' . $this->ci->db_master->protect_identifiers($this->ci->db_master->database));
 
             $retval = array();
 
-
-            if ($query->num_rows() > 0)
-            {
-
-                foreach ($query->result_array() as $row)
-                {
-
+            if ($query->num_rows() > 0) {
+                foreach ($query->result_array() as $row) {
                     $tablename = 'Tables_in_' . $this->ci->db_master->database;
-
-                    if (isset($row[$tablename]))
-                    {
+                    if (isset($row[$tablename])) {
                         /* check if table in skip arrays, if so, go next */
                         if (in_array($row[$tablename], $this->skip_tables))
                             continue;
 
                         /* check if views to be migrated */
-                        if ($this->add_view)
-                        {
+                        if ($this->add_view) {
                             ## not implemented ##
                             //$retval[] = $row[$tablename];
-                        } else
-                        {
+                        } else {
                             /* skip views */
-                            if (strtolower($row['Table_type']) == 'view')
-                            {
+                            if (strtolower($row['Table_type']) == 'view') {
                                 continue;
                             }
                             $retval[] = $row[$tablename];
@@ -146,31 +137,23 @@ class VpxMigration {
 
             $this->tables = array();
             $this->tables = $retval;
-        } else
-        {
+        } else {
             $this->tables = is_array($tables) ? $tables : explode(',', $tables);
         }
 
         ## if write file, check if we can
-        if ($this->write_file)
-        {
-
+        if ($this->write_file) {
             /* make subdir */
             $path = $this->path . '/' . $this->file_name;
 
-            if (!@is_dir($path))
-            {
-
-                if (!@mkdir($path, DIR_WRITE_MODE, true))
-                {
+            if (!@is_dir($path)) {
+                if (!@mkdir($path, DIR_WRITE_MODE, true)) {
                     return FALSE;
                 }
-
                 @chmod($path, DIR_WRITE_MODE);
             }
 
-            if (!is_dir($path) OR !is_really_writable($path))
-            {
+            if (!is_dir($path) OR !is_really_writable($path)) {
                 $msg = "Unable to write backup per table file: " . $path;
                 log_message('error', $msg);
 
@@ -178,14 +161,13 @@ class VpxMigration {
             }
 
             if($tables)
-                $file_path = $path . '/' . date('YmdHis') . '_create_' . $table . '.php';
+                $file_path = $path . '/' . date('YmdHis') . '_create_' . $tables . '.php';
             else
                 $file_path = $path . '/'.date('YmdHis').'_create_base.php';
             
             $file = fopen($file_path, 'w+');
 
-            if (!$file)
-            {
+            if (!$file) {
                 $msg = 'No File';
                 log_message('error', $msg);
                 echo $msg;
@@ -198,15 +180,13 @@ class VpxMigration {
         $up = '';
         $down = '';
         //loop through tables
-        foreach ($this->tables as $table)
-        {
-
+        foreach ($this->tables as $table) {
             log_message('debug', print_r($table, true));
 
             $q = $this->ci->db_master->query('describe ' . $this->ci->db_master->protect_identifiers($this->ci->db_master->database . '.' . $table));
+            
             // No result means the table name was invalid
-            if ($q === FALSE)
-            {
+            if ($q === FALSE) {
                 continue;
             }
 
@@ -216,6 +196,7 @@ class VpxMigration {
             $engines = $q->row_array();
 
 
+            $up .= "\n\t" . 'if($this->db_exists()) {';
             $up .= "\n\t\t" . '## Create Table ' . $table . "\n";
             foreach ($columns as $column)
             {
@@ -231,7 +212,7 @@ class VpxMigration {
             }
             $up .= "\t\t" . '$this->dbforge->create_table("' . $table . '", TRUE);' . "\n";
             if (isset($engines['Engine']) and $engines['Engine'])
-                $up .= "\t\t" . '$this->db->query(\'ALTER TABLE  ' . $this->ci->db_master->protect_identifiers($table) . ' ENGINE = ' . $engines['Engine']. '\');';
+                $up .= "\t\t" . '$this->db->query(\'ALTER TABLE  ' . $this->ci->db_master->protect_identifiers($table) . ' ENGINE = ' . $engines['Engine']. '\');'."\n\t". '}';
 
 
             $down .= "\t\t" . '### Drop table ' . $table . ' ##' . "\n";
@@ -245,6 +226,21 @@ class VpxMigration {
         $return .= '<?php ';
         $return .= 'defined(\'BASEPATH\') OR exit(\'No direct script access allowed\');' . "\n\n";
         $return .= 'class Migration_create_base extends CI_Migration {' . "\n";
+
+        $return .= "\n\t" . 'public function db_exists {
+            $this->load->dbutil();
+            $this->load->dbforge();
+
+            if (!$this->dbutil->database_exists(\''.$dbs.'\')) {
+                if ($this->dbforge->create_database(\''.$dbs.'\')) {
+                    return TRUE;
+                }
+                else {
+                    return FALSE;
+                }
+            }
+        }' . "\n";
+
         $return .= "\n\t" . 'public function up() {' . "\n";
 
         $return .= $up;

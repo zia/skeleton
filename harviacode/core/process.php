@@ -5,13 +5,14 @@ $hasil = array();
 if (isset($_POST['generate']))
 {
     // get form data
-    $table_name = safe($_POST['table_name']);
-    $jenis_tabel = safe($_POST['jenis_tabel']);
-    $export_excel = safe($_POST['export_excel']);
-    $export_word = safe($_POST['export_word']);
-    $export_pdf = safe($_POST['export_pdf']);
-    $controller = safe($_POST['controller']);
-    $model = safe($_POST['model']);
+    $model          = safe($_POST['model']);
+    $controller     = safe($_POST['controller']);
+    $export_pdf     = safe($_POST['export_pdf']);
+    $table_name     = safe($_POST['table_name']);
+    $jenis_tabel    = safe($_POST['jenis_tabel']);
+    $export_word    = safe($_POST['export_word']);
+    $export_excel   = safe($_POST['export_excel']);
+    
 
     if ($table_name <> '')
     {

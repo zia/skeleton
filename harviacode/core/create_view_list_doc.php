@@ -3,8 +3,8 @@
 $string = "<!doctype html>
 <html>
     <head>
-        <title>harviacode.com - codeigniter crud generator</title>
-        <link rel=\"stylesheet\" href=\"<?php echo base_url('assets/bootstrap/css/bootstrap.min.css') ?>\"/>
+        <title>".ucfirst($table_name)."</title>
+        <link rel=\"stylesheet\" href=\"<?php echo base_url('vendor/components/bootstrap/css/bootstrap.min.css') ?>\"/>
         <style>
             .word-table {
                 border:1px solid black !important; 
@@ -25,10 +25,9 @@ $string = "<!doctype html>
 foreach ($non_pk as $row) {
     $string .= "\n\t\t<th>" . label($row['column_name']) . "</th>";
 }
-$string .= "\n\t\t
-            </tr>";
+$string .= "\n\t\t</tr>";
 $string .= "<?php
-            foreach ($" . $c_url . "_data as \$$c_url)
+            foreach ($".$c_url."_data as \$$c_url)
             {
                 ?>
                 <tr>";
@@ -48,7 +47,16 @@ $string .=  "\t
     </body>
 </html>";
 
+$folderPath = $target.'modules/'.$c_url.'/views';
+if (!is_dir($folderPath)) {
+    try{
+        mkdir($folderPath, 0777, true);
+    }
+    catch(Exception $e) {
+        echo "Error:\n" . $e->getMessage() . PHP_EOL;
+    }
+}
 
-$hasil_view_doc = createFile($string, $target."views/" . $c_url . "/" . $v_doc_file);
+$hasil_view_doc = createFile($string, $folderPath . "/" . $v_doc_file);
 
 ?>

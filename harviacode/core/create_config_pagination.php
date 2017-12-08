@@ -12,19 +12,19 @@ $string = "<?php  if ( ! defined('BASEPATH')) exit('No direct script access allo
 \$config['full_tag_open'] = '<nav aria-label=\"Page navigation\"><ul class=\"pagination\">';
 \$config['full_tag_close'] = '</ul></nav>';
 
-\$config['first_link'] = 'First';
+\$config['first_link'] = '<i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i><i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i>';
 \$config['first_tag_open'] = '<li class=\"page-item\">';
 \$config['first_tag_close'] = '</li>';
 
-\$config['last_link'] = 'Last';
+\$config['last_link'] = '<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i><i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i>';
 \$config['last_tag_open'] = '<li class=\"page-item\">';
 \$config['last_tag_close'] = '</li>';
 
-\$config['next_link'] = 'Next';
+\$config['next_link'] = '<i class=\"fa fa-chevron-right\" aria-hidden=\"true\"></i>';
 \$config['next_tag_open'] = '<li class=\"page-item\">';
 \$config['next_tag_close'] = '</li>';
 
-\$config['prev_link'] = 'Prev';
+\$config['prev_link'] = '<i class=\"fa fa-chevron-left\" aria-hidden=\"true\"></i>';
 \$config['prev_tag_open'] = '<li class=\"page-item\">';
 \$config['prev_tag_close'] = '</li>';
 

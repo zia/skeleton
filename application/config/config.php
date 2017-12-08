@@ -139,7 +139,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = './vendor/autoload.php';
+$config['composer_autoload'] = FCPATH.'vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -226,7 +226,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 1;
+$config['log_threshold'] = array(1,2,3);
 
 /*
 |--------------------------------------------------------------------------
@@ -327,7 +327,7 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '6D4FD7148EEBA3E622FAEE7E31F52';
+$config['encryption_key'] = 'bdAKmApogME8C2Lpwv94VhPqdJecQHjW';
 
 /*
 |--------------------------------------------------------------------------
@@ -435,7 +435,7 @@ $config['standardize_newlines'] = FALSE;
 |          for backwards compatibility purposes!
 |
 */
-$config['global_xss_filtering'] = FALSE;
+$config['global_xss_filtering'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -452,8 +452,8 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
 $config['csrf_protection'] = TRUE;
-$config['csrf_token_name'] = 'FBDD7D892E943D55';
-$config['csrf_cookie_name'] = '6ADA5CBAAC7BA8B7';
+$config['csrf_token_name'] = 'L0RgWomO2d';
+$config['csrf_cookie_name'] = 'AfC33czVP4';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
 $config['csrf_exclude_uris'] = array();

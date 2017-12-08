@@ -15,6 +15,7 @@
         	</li>
         	<li>You'll find harviacode files in <code>harviacode/core</code> folder.</li>
         	<li>To create <code>Migration</code> files, open <code>CLI</code> from root folder and type <code>ci migrate generate 'your_migration_name'</code> 'your_migration_name' should be at least 4 character long. Timestamp will be added with the name.</li>
+            <li>If you manually generate migrations you'll need to use version to apply or rollback from those migrations. example: <code>ci migrate version 'your_migration_version'</code></li>
             <li>To Generate <code>Migration</code> from existing databases, open <code>CLI</code> from root folder and type <code>ci migrateall</code>Timestamp will be added with the generated migration file name.</li>
             <li>You'll find your migration files under <code>application/migrations</code> directory.</li>
             <li>There is an initial migration file with <code>dbforge</code> to create a database named <code>sample_db</code> you can change it with yours.</li>

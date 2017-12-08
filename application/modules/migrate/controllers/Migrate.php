@@ -47,26 +47,27 @@ class Migrate extends CI_Controller
     *
     * To apply new migration use version.
     *
-    * @param string $name
+    * @param string $table_name
+    * @param string $db_name
     * @return string
     */
-    public function create($name = false)
+    public function create($table_name = false, $db_name = false)
     {
-        if(!$name)
+        if(!$table_name)
         {
             echo "Please define migration name". PHP_EOL;
             return;
         }
  
-        if (!preg_match('/^[a-z_]+$/i', $name)) {
-            if (strlen($name) < 4) {
+        if (!preg_match('/^[a-z_]+$/i', $table_name)) {
+            if (strlen($table_name) < 4) {
                 echo "Migration must be at least 4 characters long" . PHP_EOL;
                 return;
             }
             echo "Wrong migration name, allowed characters: a-z and _\nExample: first_migration" . PHP_EOL;
             return;
         }
-        $filename = date('YmdHis') . '_' . $name . '.php';
+        $filename = date('YmdHis') . '_' . $table_name . '.php';
         try {
             $folderPath = APPPATH.'migrations';
             if (!is_dir($folderPath)) {
@@ -82,8 +83,9 @@ class Migrate extends CI_Controller
                 echo "File allredy exists:\n" . $filepath . PHP_EOL;
                 return;
             }
-            /*$data['className'] = ucfirst($name);*/
-            $data['className'] = $name;
+            /*$data['className'] = ucfirst($table_name);*/
+            $data['className'] = $table_name;
+            $data['dbName'] = $db_name;
             $template = $this->load->view('migration_class_template', $data, TRUE);
             //Create file
             try{
@@ -92,7 +94,7 @@ class Migrate extends CI_Controller
                 fwrite($file, $content);
                 fclose($file);
             }
-            catch(Exception $e){
+            catch(Exception $e) {
                 echo "Error:\n" . $e->getMessage() . PHP_EOL;
             }
             echo "Migration created successfully!\nLocation: " . $filepath . PHP_EOL;
@@ -108,11 +110,14 @@ class Migrate extends CI_Controller
     * applied immidietly. Use version to apply migration.
     *
     * @param $table
+    * @param $db
     * @return string
     */
 
-    public function generate($table = false){
-        !$table ? $this->vpxmigration->generate() : $this->vpxmigration->generate($table);
+    public function generate($table = false, $db = false) {
+        (!$table && !$db) ? $this->vpxmigration->generate() : $this->vpxmigration->generate($table,$db);
+        (!$table && $db) ? $this->vpxmigration->generate(false, $db) : $this->vpxmigration->generate($table,false);
+        ($table && !$db) ? $this->vpxmigration->generate($table,false) : $this->vpxmigration->generate(false, $db);
     }
 
     /**
