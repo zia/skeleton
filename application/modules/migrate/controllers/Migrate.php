@@ -34,11 +34,9 @@ class Migrate extends CI_Controller
         }
         else {
             $migration = $this->migration->version($version);
-            if (!$migration) {
-                echo $this->migration->error_string();
-            } else {
-                echo 'Migration done' . PHP_EOL;
-            }
+            
+            if (!$migration) { echo $this->migration->error_string(); }
+            else { echo 'Migration done' . PHP_EOL; }
         }
     }
     
@@ -48,13 +46,11 @@ class Migrate extends CI_Controller
     * To apply new migration use version.
     *
     * @param string $table_name
-    * @param string $db_name
     * @return string
     */
-    public function create($table_name = false, $db_name = false)
+    public function create($table_name = false)
     {
-        if(!$table_name)
-        {
+        if(!$table_name) {
             echo "Please define migration name". PHP_EOL;
             return;
         }
@@ -67,7 +63,9 @@ class Migrate extends CI_Controller
             echo "Wrong migration name, allowed characters: a-z and _\nExample: first_migration" . PHP_EOL;
             return;
         }
+
         $filename = date('YmdHis') . '_' . $table_name . '.php';
+        
         try {
             $folderPath = APPPATH.'migrations';
             if (!is_dir($folderPath)) {
@@ -78,15 +76,18 @@ class Migrate extends CI_Controller
                     echo "Error:\n" . $e->getMessage() . PHP_EOL;
                 }
             }
+
             $filepath = APPPATH . 'migrations/' . $filename;
             if (file_exists($filepath)) {
                 echo "File allredy exists:\n" . $filepath . PHP_EOL;
                 return;
             }
+            
             /*$data['className'] = ucfirst($table_name);*/
             $data['className'] = $table_name;
-            $data['dbName'] = $db_name;
+            $data['dbName'] = $this->db->database;
             $template = $this->load->view('migration_class_template', $data, TRUE);
+            
             //Create file
             try{
                 $file = fopen($filepath, "w");
@@ -97,8 +98,10 @@ class Migrate extends CI_Controller
             catch(Exception $e) {
                 echo "Error:\n" . $e->getMessage() . PHP_EOL;
             }
+            
             echo "Migration created successfully!\nLocation: " . $filepath . PHP_EOL;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             echo "Can't create migration file!\nError: " . $e->getMessage() . PHP_EOL;
         }
     }
@@ -114,10 +117,8 @@ class Migrate extends CI_Controller
     * @return string
     */
 
-    public function generate($table = false, $db = false) {
-        (!$table && !$db) ? $this->vpxmigration->generate() : $this->vpxmigration->generate($table,$db);
-        (!$table && $db) ? $this->vpxmigration->generate(false, $db) : $this->vpxmigration->generate($table,false);
-        ($table && !$db) ? $this->vpxmigration->generate($table,false) : $this->vpxmigration->generate(false, $db);
+    public function generate($table = false) {
+        (!$table) ? $this->vpxmigration->generate() : $this->vpxmigration->generate($table);
     }
 
     /**

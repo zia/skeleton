@@ -13,7 +13,7 @@ class pdf {
     function load(\$param=NULL)
     {
         #include_once APPPATH.'/third_party/mpdf/mpdf.php';
-        include_once FCPATH.'/vendor/mpdf/mpdf/mpdf.php';
+        include_once FCPATH.'/vendor/mpdf/mpdf/src/Mpdf.php';
          
         if (\$params == NULL)
         {
@@ -32,7 +32,7 @@ class pdf {
 /* http://harviacode.com */";
 
 
-
-$hasil_pdf = createFile($string, $target."libraries/pdf.php");
+/** Not required for MDF 7+ **/
+// $hasil_pdf = createFile($string, $target."libraries/pdf.php");
 
 ?>

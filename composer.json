@@ -16,11 +16,11 @@
 		"fortawesome/font-awesome":">=4",
 		"components/jquery": ">=3.2",
 		"datatables/datatables": ">=1.10",
-		"aws/aws-sdk-php": "^3.31",
-		"mpdf/mpdf": "^6.1",
 		"bordercloud/tether": "^1.1",
-		"apigen/apigen": "5.0.0-RC3",
-        "roave/better-reflection": "@dev"
+		"mpdf/mpdf": "^7.0",
+		"phpoffice/phpexcel": "^1.8",
+		"components/jqueryui": "^1.12",
+		"fzaninotto/faker": "^1.7"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

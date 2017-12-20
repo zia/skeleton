@@ -4,7 +4,9 @@ $string = "<h2><i class=\"fa fa-<?=substr(\"$table_name\", 0, -1);?>\" aria-hidd
         <div class=\"row\">
             <div class=\"col-md-4\">
                 <?php echo anchor(site_url('".$c_url."/create'),'<i class=\"fa fa-plus-circle\" aria-hidden=\"true\"></i> Create', 'class=\"btn btn-outline-primary my-2 my-sm-0\"'); ?>&nbsp;
-                <?php echo anchor(site_url('".$c_url."/create'),'<i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Upload Excel', 'class=\"btn btn-outline-success my-2 my-sm-0\"'); ?>
+                <button type=\"button\" class=\"btn btn-outline-success my-2 my-sm-0\" data-toggle=\"modal\" data-target=\"#myModal\">
+                    <i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Upload Excel
+                </button>
             </div>
             <div class=\"col-md-4 text-center\">
                 <?php if(\$this->session->userdata('message')) { ?>
@@ -77,10 +79,21 @@ $string .=  "</tr>
             </table></div></div>
         <div class=\"row\">
             <div class=\"col-md-6\">
-                <a href=\"#\" class=\"btn btn-outline-primary my-2 my-sm-0\"><i class=\"fa fa-calculator\" aria-hidden=\"true\"></i> Total ".ucfirst($table_name)." : <?php echo \$total_rows ?></a>&nbsp;";
+                <a href=\"#\" class=\"btn btn-outline-info my-2 my-sm-0\"><i class=\"fa fa-calculator\" aria-hidden=\"true\"></i> Total ".ucfirst($table_name)." : <?php echo \$total_rows ?></a>&nbsp;";
 
 if ($export_excel == '1') {
-    $string .= "<?php echo anchor(site_url('".$c_url."/excel'), '<i class=\"fa fa-file-excel-o\" aria-hidden=\"true\"></i> Excel', 'class=\"btn btn btn-outline-success my-2 my-sm-0\"'); ?>&nbsp;";
+    $string .= "<div class=\"dropdown\" style=\"display: inline;\">
+            <button type=\"button\" class=\"btn btn-outline-success dropdown-toggle\" data-toggle=\"dropdown\">
+                    <i class=\"fa fa-file-excel-o\" aria-hidden=\"true\"></i> Spreadsheet
+            </button>
+            <div class=\"dropdown-menu\">
+                <?php echo anchor(site_url('".$c_url."/excel/xlsx'), '.xlsx','class=\"dropdown-item\"'); ?>
+
+                <?php echo anchor(site_url('".$c_url."/excel/xls'), '.xls','class=\"dropdown-item\"'); ?>
+
+                <?php echo anchor(site_url('".$c_url."/excel/csv'), '.csv','class=\"dropdown-item\"'); ?>
+            </div>
+        </div>&nbsp;";
 }
 if ($export_word == '1') {
     $string .= "<?php echo anchor(site_url('".$c_url."/word'), '<i class=\"fa fa-file-word-o\" aria-hidden=\"true\"></i> Word', 'class=\"btn btn btn-outline-primary my-2 my-sm-0\"'); ?>&nbsp;";
@@ -94,6 +107,49 @@ $string .= "</div>
                 <?php echo \$pagination ?>
             </div>
         </div>\n";
+
+$string .= "<!-- Upload Excel Modal -->
+<div class=\"modal fade\" id=\"myModal\">
+    <div class=\"modal-dialog\">
+        <div class=\"modal-content\">
+            <!-- Modal Header -->
+            <div class=\"modal-header\">
+                <h4 class=\"modal-title\">
+                    <i class=\"fa fa-file-excel-o\" aria-hidden=\"true\"></i> Upload Spreadsheet
+                </h4>
+                <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class=\"modal-body\">
+                <?php echo form_open_multipart('$table_name/upload_excel', 'class=\"form-inline\"'); ?>
+                    <ul class=\"list-group\" id=\"FileHelpBlock\" style=\"margin-bottom: 15px;\">
+                        <li class=\"list-group-item\">Make Sure You have all columns in your spreadsheet or nullable value in your DB. A single error can cause unsuccessful file upload.</li>
+                        <li class=\"list-group-item\">You can download the excel file using the button at the bottom of this page, modify it and then upload it for better result.</li>
+                        <li class=\"list-group-item\">Supported File Types: .xls | .xlsx | .csv</li>
+                    </ul>
+
+                    <div class=\"form-group\">
+                        <label class=\"custom-file\">
+                            <input type=\"file\" id=\"file\" class=\"custom-file-input\" name=\"userfile\" aria-describedby=\"FileHelpBlock\" required>
+                            <span class=\"custom-file-control\"></span>
+                        </label>
+                    </div>&nbsp;
+
+                    <button type=\"submit\" class=\"btn btn-outline-success\">
+                        <i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Upload
+                    </button>
+                    
+                <?php echo form_close(); ?>
+            </div>
+
+            <!-- Modal footer -->
+            <div class=\"modal-footer\">
+                <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
+            </div>
+        </div>
+    </div>
+</div>";
 
 $folderPath = $target.'modules/'.$c_url.'/views';
     if (!is_dir($folderPath)) {

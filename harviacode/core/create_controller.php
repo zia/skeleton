@@ -22,7 +22,8 @@ class " . $c . " extends MY_Controller {
    function __construct() {
       parent::__construct();
       \$this->load->model('$m');
-      \$this->load->library('form_validation');";
+      \$this->load->library('form_validation');
+      // \$this->output->enable_profiler(TRUE);";
       if ($jenis_tabel <> 'reguler_table') { $string .= "\n\t\t\$this->load->library('datatables');"; }
 
       $string .= "\n\t }"; # Construct ends.
@@ -309,50 +310,85 @@ class " . $c . " extends MY_Controller {
          * @param
          * @return
          */
-         public function excel() {
-            \$this->load->helper('exportexcel');
-            \$namaFile = \"$table_name.xls\";
-            \$judul = \"$table_name\";
-            \$tablehead = 0;
-            \$tablebody = 1;
-            \$nourut = 1;
+         public function excel(\$type = 'xlsx') {
+            // fetch data
+            \$rows = \$this->".$m."->get_all();
 
-            //penulisan header
-            header(\"Pragma: public\");
-            header(\"Expires: 0\");
-            header(\"Cache-Control: must-revalidate, post-check=0,pre-check=0\");
-            header(\"Content-Type: application/force-download\");
-            header(\"Content-Type: application/octet-stream\");
-            header(\"Content-Type: application/download\");
-            header(\"Content-Disposition: attachment;filename=\" . \$namaFile . \"\");
-            header(\"Content-Transfer-Encoding: binary \");
+            // initialize necessary values
+            \$i = 1; \$x = 'A';
+      
+            // initialize phpexcel
+            \$objPHPExcel = new PHPExcel();
 
-            xlsBOF();
+            // set properties
+            \$objPHPExcel->getProperties()->setCreator(\"Your Name\");
+            \$objPHPExcel->getProperties()->setLastModifiedBy(\"Your Name\");
+            \$objPHPExcel->getProperties()->setTitle(\"Office 2007 XLSX ".$c." Document\");
+            \$objPHPExcel->getProperties()->setSubject(\"Office 2007 XLSX ".$c." Document\");
+            \$objPHPExcel->getProperties()->setDescription(\"".$c." document for Office 2007 XLSX, generated using PHP classes.\");
 
-            \$kolomhead = 0;
-            xlsWriteLabel(\$tablehead, \$kolomhead++, \"No\");";
-         
+            // set active sheet
+            \$objPHPExcel->setActiveSheetIndex(0);
+
+            // set header row
+            \$objPHPExcel->getActiveSheet()->SetCellValue(\$x++.\$i, 'No');";
+
             foreach ($non_pk as $row) {
-               $column_name = label($row['column_name']);
-               $string .= "\n\txlsWriteLabel(\$tablehead, \$kolomhead++, \"$column_name\");";
+               $string .= "\n\t\t\t\t\$objPHPExcel->getActiveSheet()->SetCellValue(\$x++.\$i, '".label($row['column_name'])."');";
             }
-         
-            $string .= "\n\n\tforeach (\$this->" . $m . "->get_all() as \$data) {
-            \$kolombody = 0;
 
-            //ubah xlsWriteLabel menjadi xlsWriteNumber untuk kolom numeric
-            xlsWriteNumber(\$tablebody, \$kolombody++, \$nourut);";
-            foreach ($non_pk as $row) {
-               $column_name = $row['column_name'];
-               $xlsWrite = $row['data_type'] == 'int' || $row['data_type'] == 'double' || $row['data_type'] == 'decimal' ? 'xlsWriteNumber' : 'xlsWriteLabel';
-               $string .= "\n\t    " . $xlsWrite . "(\$tablebody, \$kolombody++, \$data->$column_name);";
+            
+            $string .="\n\n\t\t\t\t\$objPHPExcel->getActiveSheet()->getStyle('A1:'.\$x.'1')->getFont()->setBold(true);
+
+            // increment & reset
+            \$i++; \$x = 'A';
+
+            // set data
+            foreach (\$rows as \$row) {
+               \$objPHPExcel->getActiveSheet()->SetCellValue(\$x++.\$i, \$i-1);";
+
+               foreach ($non_pk as $row) {
+                  $string .= "\n\t\t\t\t\t\$objPHPExcel->getActiveSheet()->SetCellValue(\$x++.\$i, \$row->".$row['column_name'].");";
+               }
+               
+               $string .= "\$i++; \$x = 'A';
             }
-            $string .= "\n\n\t\$tablebody++;
-            \$nourut++;
-         }
 
-         xlsEOF();
-         exit();
+            // set headers
+            header('Cache-Control: max-age=0');
+            // If you're serving to IE 9, then the following may be needed
+            header('Cache-Control: max-age=1');
+
+            // If you're serving to IE over SSL, then the following may be needed
+            header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+            header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+            header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+            header ('Pragma: public'); // HTTP/1.0
+
+            if(\$type === 'xlsx') {
+               //xlsx
+               header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+               header('Content-Disposition: attachment;filename=\"users.xlsx\"');
+
+               \$objWriter = PHPExcel_IOFactory::createWriter(\$objPHPExcel, 'Excel2007');
+            }
+            elseif (\$type === 'xls') {
+               //xls
+               header('Content-Type: application/vnd.ms-excel');
+               header('Content-Disposition: attachment;filename=\"users.xls\"');
+
+               \$objWriter = PHPExcel_IOFactory::createWriter(\$objPHPExcel, 'Excel5');
+            }
+            else {
+               //csv
+               header('Content-type: text/csv');
+               header('Content-Disposition: attachment;filename=\"users.csv\"');
+
+               \$objWriter = PHPExcel_IOFactory::createWriter(\$objPHPExcel, 'CSV');
+            }
+
+            \$objWriter->save('php://output');
+            exit;
          }";
       }
 
@@ -394,12 +430,58 @@ class " . $c . " extends MY_Controller {
             ini_set('memory_limit', '32M');
 
             \$html = \$this->load->view('" . $c_url ."/". $v_pdf . "', \$data, true);
-            \$this->load->library('pdf');
-            \$pdf = \$this->pdf->load();
-            \$pdf->WriteHTML(\$html);
-            \$pdf->Output('" . $table_name . ".pdf', 'D');
+
+            \$mpdf = new \Mpdf\Mpdf();
+            \$mpdf->WriteHTML(\$html);
+            \$mpdf->Output('" . $table_name . ".pdf', 'D');
          }";
       }
+
+      $string .= "\n\n
+      /**
+       * Upload excel
+       *
+       * xlsx|xls|csv file to be uploaded and imported into DB
+       * Path of files to be uploaded --> ProjectName/uploads/excel/
+      */
+      public function upload_excel() {
+         \$config['upload_path'] = FCPATH.'uploads/excel/';
+         \$config['allowed_types'] = 'xls|xlsx|csv';
+         \$config['max_size'] = '5000';
+         \$this->load->library('upload', \$config);
+
+         if (!\$this->upload->do_upload('userfile'))
+         {
+            \$data = array('info' => \$this->upload->display_errors());
+            \$this->session->set_userdata('message','File Upload Failed!');
+            redirect(site_url('$c_url'));
+         }
+         else {
+            \$data = \$this->upload->data();
+            \$file_name = \$data['file_name'];
+            \$file_path = FCPATH.'uploads/excel/'.\$file_name;
+
+            \$objPHPExcel = PHPExcel_IOFactory::load(\$file_path);
+            \$objWorksheet = \$objPHPExcel->setActiveSheetIndex(0);
+            \$totalrows = \$objWorksheet->getHighestRow();
+
+            for(\$i = 2; \$i <= \$totalrows; \$i++) {
+               \$data_val = array(";
+
+               $count = 1;
+               foreach ($non_pk as $row) {
+                  $string .= "\n\t\t\t\t\t\t'".$row['column_name']."' => \$objWorksheet->getCellByColumnAndRow(".$count++.",\$i)->getValue(),";
+               }
+
+               $string .= "\n\t\t\t\t\t);
+
+               \$this->".$m."->insert(\$data_val);
+            }
+
+            \$this->session->set_userdata('message','File Upload Success!');
+            redirect(site_url('$c_url'));
+         }
+      }";
 
       $string .= "\n\t}\n\n\t/* End of file ".$target."modules/$c_url/$c_file */";
 

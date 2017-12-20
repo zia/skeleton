@@ -4,7 +4,6 @@
     <html>
         <head>
             <title>".ucfirst($table_name)."</title>
-            <link rel=\"stylesheet\" href=\"<?php echo base_url('vendor/components/bootstrap/css/bootstrap.min.css') ?>\"/>
             <style>
                 .word-table {
                     border:1px solid black !important; 

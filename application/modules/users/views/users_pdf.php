@@ -2,7 +2,6 @@
     <html>
         <head>
             <title>Users</title>
-            <link rel="stylesheet" href="<?php echo base_url('vendor/components/bootstrap/css/bootstrap.min.css') ?>"/>
             <style>
                 .word-table {
                     border:1px solid black !important; 

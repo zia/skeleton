@@ -2,7 +2,9 @@
         <div class="row">
             <div class="col-md-4">
                 <?php echo anchor(site_url('users/create'),'<i class="fa fa-plus-circle" aria-hidden="true"></i> Create', 'class="btn btn-outline-primary my-2 my-sm-0"'); ?>&nbsp;
-                <?php echo anchor(site_url('users/create'),'<i class="fa fa-upload" aria-hidden="true"></i> Upload Excel', 'class="btn btn-outline-success my-2 my-sm-0"'); ?>
+                <button type="button" class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal">
+                    <i class="fa fa-upload" aria-hidden="true"></i> Upload Excel
+                </button>
             </div>
             <div class="col-md-4 text-center">
                 <?php if($this->session->userdata('message')) { ?>
@@ -40,20 +42,20 @@
                 <table class="table table-bordered table-hover table-condensed table-striped" style="margin-top: 1rem;">
                     <tr>
                         <th>No</th><th>Username</th>
-<th>Email</th>
-<th>Password</th>
-<th>Role</th>
-<th>Active</th>
-<th>Avatar</th>
-<th>Verification Code</th>
-<th>Remember Me</th>
-<th>Last Login</th>
-<th>Created</th>
-<th>Updated</th>
-<th>Action</th>
-            </tr>
-<?php
-            foreach ($users_data as $users)
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Active</th>
+                        <th>Avatar</th>
+                        <th>Verification Code</th>
+                        <th>Remember Me</th>
+                        <th>Last Login</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Action</th>
+                    </tr>
+                    <?php
+                    foreach ($users_data as $users)
             {
                 ?>
             <tr><td><?php echo ++$start ?></td>
@@ -74,8 +76,61 @@
             </table></div></div>
         <div class="row">
             <div class="col-md-6">
-                <a href="#" class="btn btn-outline-primary my-2 my-sm-0"><i class="fa fa-calculator" aria-hidden="true"></i> Total Users : <?php echo $total_rows ?></a>&nbsp;<?php echo anchor(site_url('users/excel'), '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Excel', 'class="btn btn btn-outline-success my-2 my-sm-0"'); ?>&nbsp;<?php echo anchor(site_url('users/word'), '<i class="fa fa-file-word-o" aria-hidden="true"></i> Word', 'class="btn btn btn-outline-primary my-2 my-sm-0"'); ?>&nbsp;<?php echo anchor(site_url('users/pdf'), '<i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF', 'class="btn btn btn-outline-danger my-2 my-sm-0"'); ?></div>
+                <a href="#" class="btn btn-outline-info my-2 my-sm-0"><i class="fa fa-calculator" aria-hidden="true"></i> Total Users : <?php echo $total_rows ?></a>&nbsp;<div class="dropdown" style="display: inline;">
+            <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i> Spreadsheet
+            </button>
+            <div class="dropdown-menu">
+                <?php echo anchor(site_url('users/excel/xlsx'), '.xlsx','class="dropdown-item"'); ?>
+
+                <?php echo anchor(site_url('users/excel/xls'), '.xls','class="dropdown-item"'); ?>
+
+                <?php echo anchor(site_url('users/excel/csv'), '.csv','class="dropdown-item"'); ?>
+            </div>
+        </div>&nbsp;<?php echo anchor(site_url('users/word'), '<i class="fa fa-file-word-o" aria-hidden="true"></i> Word', 'class="btn btn btn-outline-primary my-2 my-sm-0"'); ?>&nbsp;<?php echo anchor(site_url('users/pdf'), '<i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF', 'class="btn btn btn-outline-danger my-2 my-sm-0"'); ?></div>
             <div class="col-md-4 offset-md-2 text-right">
                 <?php echo $pagination ?>
             </div>
         </div>
+<!-- Upload Excel Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fa fa-file-excel-o" aria-hidden="true"></i> Upload Spreadsheet
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <?php echo form_open_multipart('users/upload_excel', 'class="form-inline"'); ?>
+                    <ul class="list-group" id="FileHelpBlock" style="margin-bottom: 15px;">
+                        <li class="list-group-item">Make Sure You have all columns in your spreadsheet or nullable value in your DB. A single error can cause unsuccessful file upload.</li>
+                        <li class="list-group-item">You can download the excel file using the button at the bottom of this page, modify it and then upload it for better result.</li>
+                        <li class="list-group-item">Supported File Types: .xls | .xlsx | .csv</li>
+                    </ul>
+
+                    <div class="form-group">
+                        <label class="custom-file">
+                            <input type="file" id="file" class="custom-file-input" name="userfile" aria-describedby="FileHelpBlock" required>
+                            <span class="custom-file-control"></span>
+                        </label>
+                    </div>&nbsp;
+
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="fa fa-upload" aria-hidden="true"></i> Upload
+                    </button>
+                    
+                <?php echo form_close(); ?>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

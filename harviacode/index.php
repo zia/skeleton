@@ -70,16 +70,16 @@
                             Export Word &nbsp;
                         </label>
                         
-                        <label class="checkbox-inline <?php echo file_exists('../vendor/mpdf/mpdf/mpdf.php') ? '' : 'disabled'; ?>">
+                        <label class="checkbox-inline <?php echo file_exists('../vendor/mpdf/mpdf/src/Mpdf.php') ? '' : 'disabled'; ?>">
 
                             <?php $export_pdf = isset($_POST['export_pdf']) ? $_POST['export_pdf'] : ''; ?>
 
                             <input type="checkbox" name="export_pdf" value="1" <?php echo $export_pdf == '1' ? 'checked' : ''   ?>
-                            <?php echo file_exists('../vendor/mpdf/mpdf/mpdf.php') ? '' : 'disabled'; ?>>
+                            <?php echo file_exists('../vendor/mpdf/mpdf/src/Mpdf.php') ? '' : 'disabled'; ?>>
                                             Export PDF
                         </label>
 
-                        <?php echo file_exists('../vendor/mpdf/mpdf/mpdf.php') ? '' : '<small class="text-danger">mpdf required, download <a href="http://harviacode.com">here</a></small>'; ?>
+                        <?php echo file_exists('../vendor/mpdf/mpdf/src/Mpdf.php') ? '' : '<small class="text-danger">mpdf required, download <a href="http://harviacode.com">here</a></small>'; ?>
 
                         
                         <div class="form-group">
