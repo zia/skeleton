@@ -2,7 +2,7 @@
 
 class Migration_create_base extends CI_Migration {
 
-	public function db_exists {
+	public function db_exists() {
             $this->load->dbutil();
             $this->load->dbforge();
 

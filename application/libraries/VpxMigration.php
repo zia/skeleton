@@ -226,12 +226,20 @@ class VpxMigration {
             }
         }
         
+        echo "\nCount: ".count($this->tables)."\n";
+
         ### generate the text ##
         $return .= '<?php ';
         $return .= 'defined(\'BASEPATH\') OR exit(\'No direct script access allowed\');' . "\n\n";
-        $return .= 'class Migration_create_base extends CI_Migration {' . "\n";
+        
+        if(count($this->tables) > 1) {
+            $return .= 'class Migration_create_base extends CI_Migration {' . "\n";
+        }
+        else {
+            $return .= "class Migration_create_$tables extends CI_Migration {\n";
+        }
 
-        $return .= "\n\t".'public function db_exists {
+        $return .= "\n\t".'public function db_exists() {
             $this->load->dbutil();
             $this->load->dbforge();
 
